@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# 設定ファイル
+.vscode
+.gitignore
