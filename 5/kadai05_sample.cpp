@@ -116,15 +116,65 @@ void display(void)
 	glEnd();
 
 	// ★ ここにベジェ曲線を描画するコードを追加する
-	glBegin(GL_LINE_STRIP);
-	for (double t = 0; t <= 1.0; t += 0.01)
+	if (g_ControlPoints.size() >= 4)
 	{
-		Vector2d P;
-		P.set((1 - t) * (1 - t) * (1 - t) * g_ControlPoints[0].x + 3 * t * (1 - t) * (1 - t) * g_ControlPoints[1].x + 3 * t * t * (1 - t) * g_ControlPoints[2].x + t * t * t * g_ControlPoints[3].x,
-			  (1 - t) * (1 - t) * (1 - t) * g_ControlPoints[0].y + 3 * t * (1 - t) * (1 - t) * g_ControlPoints[1].y + 3 * t * t * (1 - t) * g_ControlPoints[2].y + t * t * t * g_ControlPoints[3].y);
-		glVertex2d(P.x, P.y);
+		if ((g_ControlPoints.size() - 4) % 3 == 0)
+		{
+			glColor3d(0.0, 0.0, 1.0);
+			glBegin(GL_LINE_STRIP);
+			Vector2d P(0, 0);
+			for (unsigned int i = 0; i <= g_ControlPoints.size() - 4; i += 3)
+			{
+				for (double t = 0; t <= 1.0; t += 0.01)
+				{
+					P = pow(1.0 - t, 3) * g_ControlPoints[i] + 3 * t * pow(1.0 - t, 2) * g_ControlPoints[i + 1] + 3 * pow(t, 2) * (1.0 - t) * g_ControlPoints[i + 2] + pow(t, 3) * g_ControlPoints[i + 3];
+					glVertex2d(P.x, P.y);
+					//printf("i= '%d', ", i);
+					//printf("t= '%f', ", t);
+					//printf("P=(%lf, %lf)\n", P.x, P.y);
+				}
+			}
+			glEnd();
+		}
 	}
-	glEnd();
+
+	//法線ベクトルの描画
+	if (g_ControlPoints.size() >= 4)
+	{
+		if ((g_ControlPoints.size() - 4) % 3 == 0)
+		{
+			Vector2d P(0, 0);
+			Vector2d Ph(0, 0);
+			Vector2d Phh(0, 0);
+			for (unsigned int i = 0; i <= g_ControlPoints.size() - 4; i += 3)
+			{
+				for (double t = 0; t <= 1.0; t += 0.01)
+				{
+					glColor3d(0.0, 1.0, 0.0);
+					glBegin(GL_LINES);
+
+					P = pow(1.0 - t, 3) * g_ControlPoints[i] + 3 * t * pow(1.0 - t, 2) * g_ControlPoints[i + 1] + 3 * pow(t, 2) * (1.0 - t) * g_ControlPoints[i + 2] + pow(t, 3) * g_ControlPoints[i + 3];
+					Ph = -3 * pow(1.0 - t, 2) * g_ControlPoints[i] + (9 * pow(t, 2) - 12 * t + 3) * g_ControlPoints[i + 1] + (-9 * pow(t, 2) + 6 * t) * g_ControlPoints[i + 2] + 3 * pow(t, 2) * g_ControlPoints[i + 3];
+					Ph.normalize();
+					Ph.scale(100);
+					Phh.x = -Ph.y;
+					Phh.y = Ph.x;
+					Phh += P;
+
+					glVertex2d(P.x, P.y);
+					glVertex2d(Phh.x, Phh.y);
+					printf("i= '%d', ", i);
+					printf("t= '%f', \n", t);
+					printf("P=(%lf, %lf)\n", P.x, P.y);
+					printf("Ph=(%lf, %lf)\n", Ph.x, Ph.y);
+					printf("Ph-Length=%f\n", Ph.length());
+					printf("Phh=(%lf, %lf)\n\n", Phh.x, Phh.y);
+					glEnd();
+				}
+			}
+		}
+	}
+
 	glutSwapBuffers();
 }
 

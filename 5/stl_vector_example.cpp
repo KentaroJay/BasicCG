@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	vec.push_back(v1);		   // 配列の末尾に v1 を追加
 	vec.push_back(v2);		   // 配列の末尾に v2 を追加
 
-	printf("vec.size() = %d\n", vec.size()); // 配列に入っている要素数を確認
+	printf("vec.size() = %lu\n", vec.size()); // 配列に入っている要素数を確認
 
 	// 配列の先頭要素を取得
 	Vector2d firstElement = vec[0];
@@ -155,16 +155,25 @@ int main(int argc, char **argv)
 	// ★課題：以下にコメント文で指示する内容のプログラムコードを追加すること
 
 	// (1) vec を空にする
-
+	vec.clear();
 	// (2) 次の2次元ベクトルを vec に格納する
 	// (5.0, 2.0), (3.2, -2.3), (4.1, 9.2), (-2.0, 4.0), (0.0, -2.7)
-
+	vec.push_back(Vector2d(5.0, 2.0));
+	vec.push_back(Vector2d(3.2, -2.3));
+	vec.push_back(Vector2d(4.1, 9.2));
+	vec.push_back(Vector2d(-2.0, 4.0));
+	vec.push_back(Vector2d(0.0, -2.7));
 	// (3) 上記の2次元ベクトルを全て加算した結果を Vector2d vecSum に格納する
-
+	Vector2d vecSum(0, 0);
+	for (unsigned int i = 0; i < vec.size(); i++)
+	{
+		vecSum += vec[i];
+	}
 	// (4) vecSum の内容(x,yの値)と、vecSum の長さを出力する
-
+	vecSum.print();
+	printf("vecSum.length() = %lf\n", vecSum.length());
 	// Visual Studio でコンソールがすぐに閉じないようにするため
-	system("pause");
+	//system("pause");
 
 	return 0;
 }
