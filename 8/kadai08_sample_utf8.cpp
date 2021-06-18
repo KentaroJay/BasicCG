@@ -147,7 +147,7 @@ int halfWidth;	// 描画領域の横幅/2
 int halfHeight; // 描画領域の縦幅/2
 
 // 各種定数
-double d = 1000;  // 視点と投影面との距離
+double d = 200;  // 視点と投影面との距離
 double Kd = 0.8;  // 拡散反射定数
 double Ks = 0.8;  // 鏡面反射定数
 double Iin = 1.0; // 入射光の強さ

@@ -147,8 +147,8 @@ int halfWidth;	// •`‰æ—Ìˆæ‚Ì‰¡•/2
 int halfHeight; // •`‰æ—Ìˆæ‚Ìc•/2
 
 // Šeí’è”
-double d = 100;  // ‹“_‚Æ“Š‰e–Ê‚Æ‚Ì‹——£
-double Kd = 0.1;  // ŠgU”½Ë’è”
+double d = 200;  // ‹“_‚Æ“Š‰e–Ê‚Æ‚Ì‹——£
+double Kd = 0.5;  // ŠgU”½Ë’è”
 double Ks = 0.2;  // ‹¾–Ê”½Ë’è”
 double Iin = 1.0; // “üËŒõ‚Ì‹­‚³
 double Ia = 0.2;  // ŠÂ‹«Œõ
