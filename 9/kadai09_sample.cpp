@@ -187,26 +187,54 @@ public:
 	getColorVec(double x, double z)
 	{
 		// ★ x, z の値によって(1.0, 1.0, 0.7)または(0.6, 0.6, 0.6)のどちらかの色を返すようにする
-		if (int(x / 100) % 2 == 0)
+		if (x > 0)
 		{
-			if (int(z / 100) % 2 == 0)
+			if (int(x / 100) % 2 == 0)
 			{
-				return Vector3d(1.0, 1.0, 0.7);
+				if (int(z / 100) % 2 == 0)
+				{
+					return Vector3d(1.0, 1.0, 0.7);
+				}
+				else
+				{
+					return Vector3d(0.6, 0.6, 0.6);
+				}
 			}
 			else
 			{
-				return Vector3d(0.6, 0.6, 0.6);
+				if (int(z / 100) % 2 == 0)
+				{
+					return Vector3d(0.6, 0.6, 0.6);
+				}
+				else
+				{
+					return Vector3d(1.0, 1.0, 0.7);
+				}
 			}
 		}
 		else
 		{
-			if (int(z / 100) % 2 == 0)
+			if (int(x / 100) % 2 == 0)
 			{
-				return Vector3d(0.6, 0.6, 0.6);
+				if (int(z / 100) % 2 == 0)
+				{
+					return Vector3d(0.6, 0.6, 0.6);
+				}
+				else
+				{
+					return Vector3d(1.0, 1.0, 0.7);
+				}
 			}
 			else
 			{
-				return Vector3d(1.0, 1.0, 0.7);
+				if (int(z / 100) % 2 == 0)
+				{
+					return Vector3d(1.0, 1.0, 0.7);
+				}
+				else
+				{
+					return Vector3d(0.6, 0.6, 0.6);
+				}
 			}
 		}
 	}
@@ -304,7 +332,8 @@ void getPixelColor(double x, double y, Vector3d &colorVec)
 		double g = std::min(I * rgb.y, 1.0); // 1.0 を超えないようにする
 		double b = std::min(I * rgb.z, 1.0); // 1.0 を超えないようにする
 		Vector3d shadePosition = viewPosition + t_board * ray;
-		Vector3d ray_shade = shadePosition - lightDirection;
+		lightDirection.normalize();
+		Vector3d ray_shade = -lightDirection;
 		double t_shade = sphere.getIntersec(shadePosition, ray_shade);
 		if (t_shade > 0)
 		{
@@ -335,14 +364,28 @@ void display(void)
 	{
 		for (int x = (-halfWidth); x <= halfWidth; x++)
 		{
-
 			Vector3d colorVec;
-
-			// x, y 座標の色を取得する
-			getPixelColor(x, y, colorVec);
-
+			double x_slide;
+			double y_slide;
+			double r = 0;
+			double g = 0;
+			double b = 0;
+			for (y_slide = y - 0.5; y_slide <= y + 0.5; y_slide += 0.5)
+			{
+				for (x_slide = x - 0.5; x_slide <= x + 0.5; x_slide += 0.5)
+				{
+					// x, y 座標の色を取得する
+					getPixelColor(x, y, colorVec);
+					r += colorVec.x;
+					g += colorVec.y;
+					b += colorVec.z;
+				}
+			}
+			r /= 9;
+			g /= 9;
+			b /= 9;
 			//取得した色で、描画色を設定する
-			glColor3d(colorVec.x, colorVec.y, colorVec.z);
+			glColor3d(r, g, b);
 
 			// (x, y) の画素を描画
 			glBegin(GL_POINTS);
@@ -383,7 +426,7 @@ int main(int argc, char **argv)
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowSize(400, 400);
+	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(180, 10);
 	glutCreateWindow(argv[0]);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
